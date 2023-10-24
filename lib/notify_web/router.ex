@@ -66,6 +66,8 @@ defmodule NotifyWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{NotifyWeb.UserAuth, :ensure_authenticated}] do
+      live "/main", MainDashLive
+
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end
