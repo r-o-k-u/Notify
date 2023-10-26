@@ -31,8 +31,14 @@ defmodule NotifyWeb.UserRegistrationLive do
           Oops, something went wrong! Please check the errors below.
         </.error>
 
+
+        <.input field={@form[:first_name]} type="text" label="First name" required />
+        <.input field={@form[:last_name]} type="text" label="Last name" required />
         <.input field={@form[:email]} type="email" label="Email" required />
+        <.input field={@form[:msisdn]} type="text" label="msisdn" required />
         <.input field={@form[:password]} type="password" label="Password" required />
+
+
 
         <:actions>
           <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
@@ -63,6 +69,20 @@ defmodule NotifyWeb.UserRegistrationLive do
           )
 
         changeset = Accounts.change_user_registration(user)
+
+
+        socket =
+          socket
+          |> put_flash(:info, "User successfully created")
+        # if changeset.valid? do
+        #   # Create the user and assign a default role (frontend)
+        #   user = Accounts.create_user(changeset)
+        #   {:ok, _user} = Accounts.assign_default_role(user, "frontend")
+
+        #   # Redirect or perform other actions upon successful registration
+        # else
+        #   {:noreply, assign(socket, user: changeset)}
+        # end
         {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

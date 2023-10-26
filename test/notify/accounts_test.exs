@@ -505,4 +505,116 @@ defmodule Notify.AccountsTest do
       refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
     end
   end
+
+  describe "role" do
+    alias Notify.Accounts.Role
+
+    import Notify.AccountsFixtures
+
+    @invalid_attrs %{active: nil, name: nil}
+
+    test "list_role/0 returns all role" do
+      role = role_fixture()
+      assert Accounts.list_role() == [role]
+    end
+
+    test "get_role!/1 returns the role with given id" do
+      role = role_fixture()
+      assert Accounts.get_role!(role.id) == role
+    end
+
+    test "create_role/1 with valid data creates a role" do
+      valid_attrs = %{active: true, name: "some name"}
+
+      assert {:ok, %Role{} = role} = Accounts.create_role(valid_attrs)
+      assert role.active == true
+      assert role.name == "some name"
+    end
+
+    test "create_role/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_role(@invalid_attrs)
+    end
+
+    test "update_role/2 with valid data updates the role" do
+      role = role_fixture()
+      update_attrs = %{active: false, name: "some updated name"}
+
+      assert {:ok, %Role{} = role} = Accounts.update_role(role, update_attrs)
+      assert role.active == false
+      assert role.name == "some updated name"
+    end
+
+    test "update_role/2 with invalid data returns error changeset" do
+      role = role_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_role(role, @invalid_attrs)
+      assert role == Accounts.get_role!(role.id)
+    end
+
+    test "delete_role/1 deletes the role" do
+      role = role_fixture()
+      assert {:ok, %Role{}} = Accounts.delete_role(role)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_role!(role.id) end
+    end
+
+    test "change_role/1 returns a role changeset" do
+      role = role_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_role(role)
+    end
+  end
+
+  describe "permission" do
+    alias Notify.Accounts.Permission
+
+    import Notify.AccountsFixtures
+
+    @invalid_attrs %{active: nil, name: nil}
+
+    test "list_permission/0 returns all permission" do
+      permission = permission_fixture()
+      assert Accounts.list_permission() == [permission]
+    end
+
+    test "get_permission!/1 returns the permission with given id" do
+      permission = permission_fixture()
+      assert Accounts.get_permission!(permission.id) == permission
+    end
+
+    test "create_permission/1 with valid data creates a permission" do
+      valid_attrs = %{active: true, name: "some name"}
+
+      assert {:ok, %Permission{} = permission} = Accounts.create_permission(valid_attrs)
+      assert permission.active == true
+      assert permission.name == "some name"
+    end
+
+    test "create_permission/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_permission(@invalid_attrs)
+    end
+
+    test "update_permission/2 with valid data updates the permission" do
+      permission = permission_fixture()
+      update_attrs = %{active: false, name: "some updated name"}
+
+      assert {:ok, %Permission{} = permission} = Accounts.update_permission(permission, update_attrs)
+      assert permission.active == false
+      assert permission.name == "some updated name"
+    end
+
+    test "update_permission/2 with invalid data returns error changeset" do
+      permission = permission_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_permission(permission, @invalid_attrs)
+      assert permission == Accounts.get_permission!(permission.id)
+    end
+
+    test "delete_permission/1 deletes the permission" do
+      permission = permission_fixture()
+      assert {:ok, %Permission{}} = Accounts.delete_permission(permission)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_permission!(permission.id) end
+    end
+
+    test "change_permission/1 returns a permission changeset" do
+      permission = permission_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_permission(permission)
+    end
+  end
 end

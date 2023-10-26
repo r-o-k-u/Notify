@@ -28,4 +28,34 @@ defmodule Notify.AccountsFixtures do
     [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
     token
   end
+
+  @doc """
+  Generate a role.
+  """
+  def role_fixture(attrs \\ %{}) do
+    {:ok, role} =
+      attrs
+      |> Enum.into(%{
+        active: true,
+        name: "some name"
+      })
+      |> Notify.Accounts.create_role()
+
+    role
+  end
+
+  @doc """
+  Generate a permission.
+  """
+  def permission_fixture(attrs \\ %{}) do
+    {:ok, permission} =
+      attrs
+      |> Enum.into(%{
+        active: true,
+        name: "some name"
+      })
+      |> Notify.Accounts.create_permission()
+
+    permission
+  end
 end

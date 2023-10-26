@@ -68,6 +68,50 @@ defmodule NotifyWeb.Router do
       on_mount: [{NotifyWeb.UserAuth, :ensure_authenticated}] do
       live "/main", MainDashLive
 
+      #Define routes for RolesLiveView
+      # live "/roles", RolesLiveView, :index
+      # live "/roles/:id/edit", RolesLiveView, :edit
+      # live "/roles/:id/update", RolesLiveView, :update
+      # live "/roles/:id/delete", RolesLiveView, :delete
+
+      # Define routes for PermissionsLiveView
+      live "/permissions", PermissionLive ,:index
+      # live "/permissions/:id/edit", PermissionsLiveView, :edit
+      # live "/permissions/:id/update", PermissionsLiveView, :update
+      # live "/permissions/:id/delete", PermissionsLiveView, :delete
+
+      # Define routes for ContactLive
+      live "/groups", GroupLive.Index, :index
+      live "/groups/new", GroupLive.Index, :new
+      live "/groups/:id/edit", GroupLive.Index, :edit
+
+      live "/groups/:id", GroupLive.Show, :show
+      live "/groups/:id/show/edit", GroupLive.Show, :edit
+      # Define routes for ContactLive
+      live "/contacts", ContactLive.Index, :index
+      live "/contacts/new", ContactLive.Index, :new
+      live "/contacts/:id/edit", ContactLive.Index, :edit
+
+      live "/contacts/:id", ContactLive.Show, :show
+      live "/contacts/:id/show/edit", ContactLive.Show, :edit
+
+      # Define routes for ContactLive
+      live "/emails", EmailLive.Index, :index
+      live "/emails/new", EmailLive.Index, :new
+      live "/emails/:id/edit", EmailLive.Index, :edit
+
+      live "/emails/:id", EmailLive.Show, :show
+      live "/emails/:id/show/edit", EmailLive.Show, :edit
+
+
+      # Define routes for UsersLiveView
+      # live "/users", UsersLiveView, :index
+      # live "/users/:id/edit", UsersLiveView, :edit
+      # live "/users/:id/update", UsersLiveView, :update
+      # live "/users/:id/delete", UsersLiveView, :delete
+      # live "/users/:id/assign_roles", UsersLiveView, :assign_roles
+
+      live "/users", UsersLiveView
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end

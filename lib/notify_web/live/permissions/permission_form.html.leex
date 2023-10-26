@@ -1,0 +1,15 @@
+<%= form_for @permission, Routes.permission_path(@socket, :create), [phx_change: :validate, phx_submit: :submit] %>
+  <div class="field">
+    <%= label f, :name %>
+    <%= text_input f, :name %>
+  </div>
+
+  <div class="field">
+    <%= label f, :active %>
+    <%= checkbox f, :active %>
+  </div>
+
+  <div class="actions">
+    <%= submit "Save" %>
+  </div>
+</form>

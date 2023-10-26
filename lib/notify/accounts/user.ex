@@ -3,13 +3,27 @@ defmodule Notify.Accounts.User do
   import Ecto.Changeset
 
   schema "users" do
+    field :first_name, :string
+    field :last_name, :string
     field :email, :string
+    field :msisdn, :string
+    field :active, :boolean
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :special_permission, :map
+    belongs_to :role,Notify.Accounts.Role
+    # has_many :groups, Notify.Groups.Group
+    # has_many :contacts, Notify.Contacts.Contact
+    # has_many :audit_logs, Notify.AuditLogs.AuditLog
+    # has_many :permissions, through: [:role, :permissions]
 
     timestamps(type: :utc_datetime)
   end
+
+
+  @required_fields ~w(email password first_name last_name msisdn)a
+  @optional_fields ~w(role_id active phone special_permission)a
 
   @doc """
   A user changeset for registration.
@@ -36,9 +50,14 @@ defmodule Notify.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    # |> cast(attrs, [:email, :password])
+    |> cast(attrs, @required_fields, @optional_fields)
+    |> validate_required(@required_fields)
     |> validate_email(opts)
     |> validate_password(opts)
+    |> validate_length(:first_name, max: 255)
+    |> validate_length(:last_name, max: 255)
+    |> validate_format(:email, ~r/@/)
   end
 
   defp validate_email(changeset, opts) do
