@@ -2,12 +2,11 @@ defmodule Notify.Accounts.Role do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "role" do
+  schema "roles" do
     field :active, :boolean, default: true
     field :name, :string
-    #belongs_to :user, Notify.Accounts.User, foreign_key: :role_id
+    belongs_to :user, Notify.Accounts.User, foreign_key: :role_id
     has_many :users, Notify.Accounts.User
-    has_many :permissions, Notify.Permissions.Permission
 
     timestamps(type: :utc_datetime)
   end

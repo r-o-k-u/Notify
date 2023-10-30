@@ -2,11 +2,11 @@ defmodule Notify.Accounts.Permission do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "permission" do
+  schema "permissions" do
     field :active, :boolean, default: true
     field :name, :string
 
-    has_many :roles, Notify.Roles.Role
+    has_many :role, Notify.Accounts.Role
 
     timestamps(type: :utc_datetime)
   end

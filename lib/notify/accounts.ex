@@ -22,6 +22,7 @@ defmodule Notify.Accounts do
   """
   def list_users do
     Repo.all(User)
+    |> Repo.preload(roles: :role)
   end
 
   @doc """

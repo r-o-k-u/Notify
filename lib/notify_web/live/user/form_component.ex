@@ -25,6 +25,7 @@ defmodule NotifyWeb.UserLive.FormComponent do
         <.input field={@form[:email]} type="text" label="email" />
         <.input field={@form[:msisdn]} type="text" label="msisdn" />
         <.input field={@form[:active]} type="checkbox" label="Active" />
+        <label for="roleField">Role</label>
         <select id="roleField">
           <option value="super_admin">Super Admin</option>
           <option value="admin">Admin</option>

@@ -9,11 +9,12 @@ defmodule Notify.Repo.Migrations.CreateUsers do
       add :last_name, :string
       add :email, :string
       add :msisdn, :string
+      add :plan, :string
       add :active, :boolean
       add :hashed_password, :string
       add :confirmed_at, :naive_datetime
       add :special_permission, :map
-      add :role_id, references(:roles, on_delete: :nothing)
+      add :role_id, references(:roles, on_delete: :nothing),
 
       timestamps()
     end
