@@ -1,4 +1,4 @@
-defmodule NotifyWeb.UsersLiveView.Show do
+defmodule NotifyWeb.UserLive.Show do
   use NotifyWeb, :live_view
 
   alias Notify.Accounts
@@ -10,12 +10,15 @@ defmodule NotifyWeb.UsersLiveView.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
+    IO.puts("++++")
+    IO.puts(id)
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:user, Accounts.get_user!(id))}
+     |> assign(:user, Accounts.get_user(id))
+    }
   end
 
-  defp page_title(:show), do: "Show Group"
-  defp page_title(:edit), do: "Edit Group"
+  defp page_title(:show), do: "Show User"
+  defp page_title(:edit), do: "Edit User"
 end

@@ -12,6 +12,7 @@ defmodule Notify.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
     field :special_permission, :map
+    field :plan, Ecto.Enum, values: [:gold, :normal] , default: :normal
     belongs_to :role,Notify.Accounts.Role
     # has_many :groups, Notify.Groups.Group
     # has_many :contacts, Notify.Contacts.Contact
