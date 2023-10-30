@@ -7,9 +7,8 @@ defmodule Notify.Contacts.Contact do
     field :name, :string
     field :email, :string
     field :phone, :string
-    field :user_id, :id
-    field :group_id, :id
-
+    belongs_to :group, Notify.Group
+    belongs_to :user, Notify.Accounts.User
     timestamps(type: :utc_datetime)
   end
 
@@ -19,7 +18,8 @@ defmodule Notify.Contacts.Contact do
 
   def changeset(contact, attrs) do
     contact
-    |> cast(attrs, @required_fields, @optional_fields)
+    |> cast(attrs, [:name, :email, :phone,:group_id, :user_id, :active])
+    # |> cast_assoc(:group, required: false) #TODO check on this
     |> validate_required(@required_fields)
     |> validate_format(:email, ~r/@/)
   end

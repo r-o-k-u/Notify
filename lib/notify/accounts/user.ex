@@ -11,9 +11,9 @@ defmodule Notify.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
-    field :special_permission, :map
+    field :custom_permissions, :map
     field :plan, Ecto.Enum, values: [:gold, :normal] , default: :normal
-    # belongs_to :role,Notify.Accounts.Role
+    belongs_to :role, Notify.Accounts.Role
     # has_many :groups, Notify.Groups.Group
     # has_many :contacts, Notify.Contacts.Contact
     # has_many :audit_logs, Notify.AuditLogs.AuditLog
@@ -59,6 +59,12 @@ defmodule Notify.Accounts.User do
     |> validate_length(:first_name, max: 255)
     |> validate_length(:last_name, max: 255)
     |> validate_format(:email, ~r/@/)
+  end
+
+  def update_user_changeset(user, attrs, opts \\ []) do
+    user
+    # |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:role_id, :custom_permissions , :email ,:msisdn])
   end
 
   defp validate_email(changeset, opts) do

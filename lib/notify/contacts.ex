@@ -19,6 +19,7 @@ defmodule Notify.Contacts do
   """
   def list_contacts do
     Repo.all(Contact)
+    # |> Repo.preload(:group)
   end
 
   @doc """

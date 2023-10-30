@@ -5,6 +5,7 @@ defmodule Notify.Repo.Migrations.CreateRoles do
     create table(:roles) do
       add :name, :string
       add :active, :boolean, default: true
+      add :permissions, :map
 
       timestamps()
     end

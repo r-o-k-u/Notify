@@ -22,21 +22,9 @@ defmodule NotifyWeb.EmailLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:subject]} type="text" label="Subject" />
-        <.input  field={@form[:content]} type="text" label="Content" />
-        <label>
-        Single Email
-          <input type="radio" name="email_type" value="single" phx-click="toggle_email_type" />
-        </label>
-        <label>
-          Group Email
-          <input type="radio" name="email_type" value="group" phx-click="toggle_email_type" />
-        </label>
-        <%= if assigns[:email_type] != "single" do %>
-          <.live_component module={NotifyWeb.EmailLive.ContactSelect} id="contact" />
-          <% else %>
-          <.live_component module={NotifyWeb.EmailLive.GroupSelect} id="group" />
-          <% end %>
-
+        <.input  field={@form[:content]} type="textarea" label="Content" />
+        <.input field={@form[:group_id]} options={Enum.map(@groups, &{&1.name, &1.id} )} type="select" label="Group" />
+        <.input field={@form[:contact_id]} options={Enum.map(@contacts, &{&1.name, &1.id} )} type="select" label="Contact" />
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Email</.button>
@@ -54,6 +42,8 @@ defmodule NotifyWeb.EmailLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:groups, Groups.list_groups())
+     |> assign(:contacts, Contacts.list_contacts())
      |> assign_form(changeset)}
   end
 

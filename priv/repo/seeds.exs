@@ -10,16 +10,18 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Notify.Repo
-alias Notify.Accounts.Role
 
-alias Notify.Accounts.Permission
-roles = ~w(User Administrator  Guest)
-permissions = ~w(create_email create_group  super_user)
+# alias Notify.Repo
+# alias Notify.Accounts.Role
+# roles = ~w(User Administrator  Guest)
 
-Enum.each(permissions, fn name ->
-  Repo.insert!(%Notify.Accounts.Permission{name: name })
-end)
-Enum.each(roles, fn name ->
-  Notify.Accounts.create_role(%{name: name })
-end)
+# Enum.each(roles, fn name ->
+#   Notify.Accounts.create_role(%{name: name })
+# end)
+
+
+for role <- Notify.Accounts.DefaultRoles.all() do
+  unless Notify.Accounts.get_role_by_name(role.name) do
+    {:ok, _role} = Notify.Accounts.create_role(role)
+  end
+end

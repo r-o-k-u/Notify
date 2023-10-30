@@ -3,8 +3,6 @@ defmodule NotifyWeb.EmailLive.Index do
 
   alias Notify.Emails
   alias Notify.Emails.Email
-  alias Notify.Groups
-  alias Notify.Contacts
 
 
   # @impl true

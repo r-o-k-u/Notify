@@ -2,6 +2,8 @@ defmodule NotifyWeb.ContactLive.FormComponent do
   use NotifyWeb, :live_component
 
   alias Notify.Contacts
+  alias Notify.Groups
+  alias NotifyWeb.UserAuth
 
   @impl true
   def render(assigns) do
@@ -23,7 +25,8 @@ defmodule NotifyWeb.ContactLive.FormComponent do
         <.input field={@form[:email]} type="text" label="Email" />
         <.input field={@form[:phone]} type="text" label="Phone" />
         <.input field={@form[:active]} type="checkbox" label="Active" />
-        <:actions>
+        <.input field={@form[:group_id]} options={Enum.map(@groups, &{&1.name, &1.id} )} type="select" label="Group" />
+       <:actions>
           <.button phx-disable-with="Saving...">Save Contact</.button>
         </:actions>
       </.simple_form>
@@ -38,6 +41,7 @@ defmodule NotifyWeb.ContactLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:groups, Groups.list_groups())
      |> assign_form(changeset)}
   end
 
@@ -52,10 +56,15 @@ defmodule NotifyWeb.ContactLive.FormComponent do
   end
 
   def handle_event("save", %{"contact" => contact_params}, socket) do
+    # contact_param2 = contact_params |> Map.put("user_id",socket.assigns.current_user.id)
+    user = socket.assigns.current_user
+    IO.puts("******")
+    # IO.inspect auth
     save_contact(socket, socket.assigns.action, contact_params)
   end
 
   defp save_contact(socket, :edit, contact_params) do
+
     case Contacts.update_contact(socket.assigns.contact, contact_params) do
       {:ok, contact} ->
         notify_parent({:saved, contact})
@@ -71,7 +80,6 @@ defmodule NotifyWeb.ContactLive.FormComponent do
   end
 
   defp save_contact(socket, :new, contact_params) do
-    IO.puts("## SAVINGS CONTACT##")
     case Contacts.create_contact(contact_params) do
       {:ok, contact} ->
         notify_parent({:saved, contact})
@@ -82,7 +90,6 @@ defmodule NotifyWeb.ContactLive.FormComponent do
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.puts("## SAVINGS CONTACT## ***")
         {:noreply, assign_form(socket, changeset)}
     end
   end

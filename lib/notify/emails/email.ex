@@ -19,7 +19,7 @@ defmodule Notify.Emails.Email do
   @doc false
   def changeset(email, attrs) do
     email
-    |> cast(attrs, [:subject, :content, :status, :retry_count, :last_retry])
-    |> validate_required([:subject, :content, :status, :retry_count, :last_retry])
+    |> cast(attrs, [:subject, :content, :status,:group_id,:user_id, :retry_count, :last_retry])
+    |> validate_required([:subject, :content])
   end
 end

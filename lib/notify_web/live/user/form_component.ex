@@ -2,7 +2,6 @@ defmodule NotifyWeb.UserLive.FormComponent do
   use NotifyWeb, :live_component
 
   alias Notify.Accounts
-  alias Notify.Accounts.{User, UserToken, UserNotifier}
 
   @impl true
   def render(assigns) do
@@ -12,6 +11,8 @@ defmodule NotifyWeb.UserLive.FormComponent do
         <%= @title %>
         <:subtitle>Use this form to manage user records in your database.</:subtitle>
       </.header>
+
+
 
       <.simple_form
         for={@form}

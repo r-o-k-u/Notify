@@ -13,8 +13,8 @@ defmodule Notify.Repo.Migrations.CreateUsers do
       add :active, :boolean
       add :hashed_password, :string
       add :confirmed_at, :naive_datetime
-      add :special_permission, :map
-      add :role_id, references(:roles, on_delete: :nothing),
+      add :custom_permissions, :map
+      add :role_id, references(:roles, on_delete: :nothing)
 
       timestamps()
     end

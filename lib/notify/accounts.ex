@@ -6,7 +6,8 @@ defmodule Notify.Accounts do
   import Ecto.Query, warn: false
   alias Notify.Repo
 
-  alias Notify.Accounts.{User, UserToken, UserNotifier}
+  alias Notify.Accounts.{User, UserToken, UserNotifier,Role}
+
 
   ## Database getters
 
@@ -22,7 +23,7 @@ defmodule Notify.Accounts do
   """
   def list_users do
     Repo.all(User)
-    |> Repo.preload(roles: :role)
+    |> Repo.preload(:role)
   end
 
   @doc """
@@ -74,6 +75,20 @@ defmodule Notify.Accounts do
 
   """
   def get_user(id), do: Repo.get!(User, id)
+
+  # TODO
+  # def add_role_to_user(user, role_name) do
+  #   with {:ok, role} <- get_role_by_name(role_name) do
+  #     update_user(user, %{role_id: role.id})
+  #   end
+  # end
+
+
+  # def add_custom_permission_to_user(user, name, actions) do
+  #   custom_permissions = Map.put(user.custom_permissions, name, actions)
+  #   update_user(user, %{custom_permissions, custom_permissions})
+  # end
+
 
   ## User registration
 
@@ -433,6 +448,11 @@ defmodule Notify.Accounts do
     |> Repo.update()
   end
 
+
+  def get_role_by_name(name) when is_binary(name) do
+    Repo.get_by(Role, name: name)
+  end
+
   @doc """
   Deletes a role.
 
@@ -449,112 +469,4 @@ defmodule Notify.Accounts do
     Repo.delete(role)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking role changes.
-
-  ## Examples
-
-      iex> change_role(role)
-      %Ecto.Changeset{data: %Role{}}
-
-  """
-  def change_role(%Role{} = role, attrs \\ %{}) do
-    Role.changeset(role, attrs)
-  end
-
-  alias Notify.Accounts.Permission
-
-  @doc """
-  Returns the list of permission.
-
-  ## Examples
-
-      iex> list_permission()
-      [%Permission{}, ...]
-
-  """
-  def list_permission do
-    Repo.all(Permission)
-  end
-
-  @doc """
-  Gets a single permission.
-
-  Raises `Ecto.NoResultsError` if the Permission does not exist.
-
-  ## Examples
-
-      iex> get_permission!(123)
-      %Permission{}
-
-      iex> get_permission!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_permission!(id), do: Repo.get!(Permission, id)
-
-  @doc """
-  Creates a permission.
-
-  ## Examples
-
-      iex> create_permission(%{field: value})
-      {:ok, %Permission{}}
-
-      iex> create_permission(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_permission(attrs \\ %{}) do
-    %Permission{}
-    |> Permission.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a permission.
-
-  ## Examples
-
-      iex> update_permission(permission, %{field: new_value})
-      {:ok, %Permission{}}
-
-      iex> update_permission(permission, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_permission(%Permission{} = permission, attrs) do
-    permission
-    |> Permission.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a permission.
-
-  ## Examples
-
-      iex> delete_permission(permission)
-      {:ok, %Permission{}}
-
-      iex> delete_permission(permission)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_permission(%Permission{} = permission) do
-    Repo.delete(permission)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking permission changes.
-
-  ## Examples
-
-      iex> change_permission(permission)
-      %Ecto.Changeset{data: %Permission{}}
-
-  """
-  def change_permission(%Permission{} = permission, attrs \\ %{}) do
-    Permission.changeset(permission, attrs)
-  end
 end

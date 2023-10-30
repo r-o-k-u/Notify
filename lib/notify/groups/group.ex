@@ -13,7 +13,7 @@ defmodule Notify.Groups.Group do
   @doc false
   def changeset(group, attrs) do
     group
-    |> cast(attrs, [:name, :active])
+    |> cast(attrs, [:name, :active , :user_id])
     |> validate_required([:name, :active])
   end
 end
