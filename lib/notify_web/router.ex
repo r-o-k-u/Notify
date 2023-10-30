@@ -111,7 +111,8 @@ defmodule NotifyWeb.Router do
       # live "/users/:id/delete", UsersLiveView, :delete
       # live "/users/:id/assign_roles", UsersLiveView, :assign_roles
 
-      live "/users", UsersLiveView
+      live "/users", UserLive
+      live "/users/:id/show/edit", EmailLive.Show, :edit
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end

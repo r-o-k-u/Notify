@@ -3,10 +3,26 @@ defmodule NotifyWeb.EmailLive.Index do
 
   alias Notify.Emails
   alias Notify.Emails.Email
+  alias Notify.Groups
+  alias Notify.Contacts
+
+
+  # @impl true
+  # def render(assigns) do
+  #   ~L"""
+  #   <div>
+  #     <%= if assigns[:contact] do %>
+  #       <%= live_render(@socket, NotifyWeb.EmailLive.FormComponent, contact: assigns[:contact]) %>
+  #     <% else %>
+  #       <%= live_render(@socket, NotifyWeb.EmailLive.FormComponent) %>
+  #     <% end %>
+  #   </div>
+  #   """
+  # end
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :emails, Emails.list_emails())}
+    {:ok, stream(socket, :emails, Emails.list_emails() )}
   end
 
   @impl true
@@ -23,6 +39,8 @@ defmodule NotifyWeb.EmailLive.Index do
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Email")
+    |> assign(:email_type, "single")
+
     |> assign(:email, %Email{})
   end
 

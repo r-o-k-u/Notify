@@ -2,6 +2,8 @@ defmodule NotifyWeb.EmailLive.FormComponent do
   use NotifyWeb, :live_component
 
   alias Notify.Emails
+  alias Notify.Contacts
+  alias Notify.Groups
 
   @impl true
   def render(assigns) do
@@ -20,16 +22,22 @@ defmodule NotifyWeb.EmailLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:subject]} type="text" label="Subject" />
-        <.input field={@form[:content]} type="text" label="Content" />
-        <.input
-          field={@form[:status]}
-          type="select"
-          label="Status"
-          prompt="Choose a value"
-          options={Ecto.Enum.values(Notify.Emails.Email, :status)}
-        />
-        <.input field={@form[:retry_count]} type="number" label="Retry count" />
-        <.input field={@form[:last_retry]} type="time" label="Last retry" />
+        <.input  field={@form[:content]} type="text" label="Content" />
+        <label>
+        Single Email
+          <input type="radio" name="email_type" value="single" phx-click="toggle_email_type" />
+        </label>
+        <label>
+          Group Email
+          <input type="radio" name="email_type" value="group" phx-click="toggle_email_type" />
+        </label>
+        <%= if assigns[:email_type] != "single" do %>
+          <.live_component module={NotifyWeb.EmailLive.ContactSelect} id="contact" />
+          <% else %>
+          <.live_component module={NotifyWeb.EmailLive.GroupSelect} id="group" />
+          <% end %>
+
+
         <:actions>
           <.button phx-disable-with="Saving...">Save Email</.button>
         </:actions>
@@ -37,6 +45,7 @@ defmodule NotifyWeb.EmailLive.FormComponent do
     </div>
     """
   end
+
 
   @impl true
   def update(%{email: email} = assigns, socket) do
@@ -60,6 +69,10 @@ defmodule NotifyWeb.EmailLive.FormComponent do
 
   def handle_event("save", %{"email" => email_params}, socket) do
     save_email(socket, socket.assigns.action, email_params)
+  end
+
+  def handle_event("toggle_email_type", %{"value" => email_type}, socket) do
+    {:noreply, assign(socket, email_type: email_type)}
   end
 
   defp save_email(socket, :edit, email_params) do

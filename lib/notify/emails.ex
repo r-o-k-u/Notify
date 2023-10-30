@@ -8,6 +8,8 @@ defmodule Notify.Emails do
 
   alias Notify.Emails.Email
 
+  alias Notify.Contacts.Contact
+
   @doc """
   Returns the list of emails.
 
@@ -88,6 +90,32 @@ defmodule Notify.Emails do
   def delete_email(%Email{} = email) do
     Repo.delete(email)
   end
+
+  def send_email_to_contact( contact, subject,body , group) do
+    case Notify.Mailer.deliver(contact.email,subject, body) do
+      {:ok, _message} ->
+        contact.email
+        |> Email.changeset(%{status: :sent, delivery_status: :delivered, contact_id: contact.id,group_id: group.id})
+        |> Repo.update()
+
+      {:error, _reason} ->
+        contact.email
+        |> Email.changeset(%{status: :sent, delivery_status: :failed, contact_id: contact.id,group_id: group.id})
+        |> Repo.update()
+    end
+  end
+
+  def send_email_to_group(%Email{} = email, subject,body , group_id) do
+    # Fetch all contacts in the specified group
+    contacts = Repo.all(from(c in Contact, where: c.group_id == ^group_id))
+
+    # Iterate through the contacts and send the email to each one
+    Enum.each(contacts, fn contact ->
+      send_email_to_contact(email, subject,body ,contact)
+    end)
+  end
+
+
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking email changes.

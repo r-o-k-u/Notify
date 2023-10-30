@@ -6,6 +6,7 @@ defmodule Notify.Repo.Migrations.CreateEmails do
       add :subject, :string
       add :content, :string
       add :status, :string
+      add :delivery_status, :string
       add :retry_count, :integer
       add :last_retry, :time
       add :user_id, references(:users, on_delete: :nothing)

@@ -4,6 +4,7 @@ defmodule Notify.Emails.Email do
 
   schema "emails" do
     field :status, Ecto.Enum, values: [:unsent, :sent, :failed, :resent, :deleted]
+    field :delivery_status, Ecto.Enum, values: [:delivered, :failed]
     field :subject, :string
     field :content, :string
     field :retry_count, :integer
