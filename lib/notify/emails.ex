@@ -53,6 +53,7 @@ defmodule Notify.Emails do
 
   """
   def create_email(attrs \\ %{}) do
+    IO.puts("CREATING EMAIL")
     %Email{}
     |> Email.changeset(attrs)
     |> Repo.insert()
@@ -92,7 +93,7 @@ defmodule Notify.Emails do
     Repo.delete(email)
   end
 
-  def send_email( email) do
+  def send_email(email) do
     IO.inspect email
 
     case email do
@@ -109,15 +110,25 @@ defmodule Notify.Emails do
 
         if group_id == 1 do
           IO.puts("SENDING group email #{group_id}")
+          # If sending is successful, return a response like:
+          {:ok, "Group email sent successfully"}
+          # If sending fails, you can return:
+          {:error, "Failed to send group email"}
         else
           IO.puts("Sending individual email #{contact_id}")
-          send_email_to_contact(email)
+          case send_email_to_contact(email) do
+            {:ok, _} ->
+              {:ok, "Individual email sent successfully"}
+            {:error, reason} ->
+              IO.puts("Failed to send individual email: #{reason}")
+              {:error, "Failed to send individual email"}
+          end
         end
+
       _ ->
         IO.puts("One or more keys not found in the map")
+        {:error, "One or more keys not found in the map"}
     end
-
-    false
   end
 
   def send_email_to_contact(email) do
@@ -133,43 +144,55 @@ defmodule Notify.Emails do
         IO.puts("Group ID: #{group_id}")
         IO.puts("Subject: #{subject}")
 
-        IO.puts("SENDING group email  contact  - #{contact_id}")
+        IO.puts("Sending email to contact - #{contact_id}")
 
-        contact = Repo.get_by(Contact, id: contact_id)
+        case Repo.get(Contact, contact_id) do
+          %Contact{email: contact_email} ->
+            IO.puts("Contact Email: #{contact_email}")
 
-        IO.inspect contact
-        IO.puts("Group ID: #{contact.email}")
-        email =
-          new()
-          |> to(contact.email)
-          |> from({"Notify", "contact@example.com"})
-          |> subject(subject)
-          |> text_body(content)
-         changeset =  Email.changeset(%Email{}, %{subject: subject, content: content, status: :sent, delivery_status: :failed,contact_id: contact.id, retry_count: 0})
-          IO.inspect changeset
-        case Mailer.deliver(email) do
-          # changeset =  Email.changeset(%Email{}, %{subject: subject, content: content, status: :sent, delivery_status: :failed,contact_id: contact.id, retry_count: 0})
-          # IO.inspect changeset
-          {:ok, _message} ->
-            email
-            |> IO.inspect(label: :_message)
-            |> Email.changeset(%Email{}, %{subject: subject, content: content, status: :sent, delivery_status: :failed,contact_id: contact.id, retry_count: 0})
-            # |> IO.inspect(label: :_message)
-            # |> Repo.update()
+            email =
+              new()
+              |> to(contact_email)
+              |> from({"Notify", "contact@example.com"})
+              |> subject(subject)
+              |> text_body(content)
+            IO.inspect email
+            case Mailer.deliver(email) do
+              {:ok, _email} ->
+                IO.puts("Email delivered successfully")
 
-          {:error, _reason} ->
-            contact.email
-            |> IO.inspect(label: :_reason)
-            |> Email.changeset(%{subject: :subject ,content: :content ,status: :sent, delivery_status: :failed, contact_id: contact.id})
-            |> Repo.update()
+                # Create an email record
+                changeset = %{
+                  subject: subject,
+                  content: content,
+                  status: :sent,
+                  delivery_status: :delivered,
+                  contact_id: contact_id,
+                  group_id: group_id,  # Add group_id if available
+                  retry_count: 0
+                }
 
+                case create_email(changeset) do
+                  {:ok, _} ->
+                    {:ok, "Email record created successfully"}
+                  {:error, changeset} ->
+                    {:error, "Failed to create email record: #{inspect(changeset)}"}
+                end
+
+              {:error, reason} ->
+                IO.puts("Failed to deliver email: #{reason}")
+                {:error, "Failed to deliver email"}
+            end
+
+          _ ->
+            IO.puts("Contact not found")
+            {:error, "Contact not found"}
         end
+
       _ ->
         IO.puts("One or more keys not found in the map")
+        {:error, "One or more keys not found in the map"}
     end
-
-
-
   end
 
   def send_email_to_group(%Email{} = email, subject,body , group_id) do

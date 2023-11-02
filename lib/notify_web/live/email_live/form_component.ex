@@ -57,14 +57,22 @@ defmodule NotifyWeb.EmailLive.FormComponent do
     {:noreply, assign_form(socket, changeset)}
   end
 
-  def handle_event("save", %{"email" => email_params}, socket) do
-    x= Notify.Emails.send_email(email_params) # Send the email
-    IO.puts(x)
-    save_email(socket, socket.assigns.action, email_params)
-  end
 
-  def handle_event("toggle_email_type", %{"value" => email_type}, socket) do
-    {:noreply, assign(socket, email_type: email_type)}
+
+  def handle_event("save", %{"email" => email_params}, socket) do
+    case Notify.Emails.send_email(email_params) do
+      {:ok, message} ->
+        IO.puts("Email sending was successful: #{message}")
+        # Sending email was successful, now save the email and update the socket
+        save_email(socket, socket.assigns.action, email_params)
+
+      {:error, message} ->
+        IO.puts("Email sending failed: #{message}")
+        # Sending email failed; you can handle this case as needed
+        # In this example, I'm just printing an error message
+        IO.puts("Failed to send the email: #{message}")
+        {:noreply, socket}
+    end
   end
 
   defp save_email(socket, :edit, email_params) do

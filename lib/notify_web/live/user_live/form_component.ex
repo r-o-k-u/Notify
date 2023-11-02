@@ -27,7 +27,6 @@ defmodule NotifyWeb.UserLive.FormComponent do
         <.input field={@form[:msisdn]} type="text" label="msisdn" />
         <.input field={@form[:active]} type="checkbox" label="Active" />
         <.input field={@form[:role_id]} options={Enum.map(@role, &{&1.name, &1.id} )} type="select" label="Role" />
-
         <:actions>
           <.button phx-disable-with="Saving...">Save User</.button>
         </:actions>
