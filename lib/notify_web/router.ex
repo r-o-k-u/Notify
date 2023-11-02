@@ -68,17 +68,7 @@ defmodule NotifyWeb.Router do
       on_mount: [{NotifyWeb.UserAuth, :ensure_authenticated}] do
       live "/main", MainDashLive
 
-      #Define routes for RolesLiveView
-      # live "/roles", RolesLiveView, :index
-      # live "/roles/:id/edit", RolesLiveView, :edit
-      # live "/roles/:id/update", RolesLiveView, :update
-      # live "/roles/:id/delete", RolesLiveView, :delete
 
-      # Define routes for PermissionsLiveView
-      live "/permissions", PermissionLive ,:index
-      # live "/permissions/:id/edit", PermissionsLiveView, :edit
-      # live "/permissions/:id/update", PermissionsLiveView, :update
-      # live "/permissions/:id/delete", PermissionsLiveView, :delete
 
       # Define routes for ContactLive
       live "/groups", GroupLive.Index, :index
@@ -104,15 +94,12 @@ defmodule NotifyWeb.Router do
       live "/emails/:id/show/edit", EmailLive.Show, :edit
 
 
-      # Define routes for UsersLiveView
-      # live "/users", UsersLiveView, :index
-      # live "/users/:id/edit", UsersLiveView, :edit
-      # live "/users/:id/update", UsersLiveView, :update
-      # live "/users/:id/delete", UsersLiveView, :delete
-      # live "/users/:id/assign_roles", UsersLiveView, :assign_roles
+      live "/users", UserLive.Index , :index
+      live "/users/:id/edit", UserLive.Index, :edit
+      # live "/users/:id", UserLive.Show, :edit
+      live "/users/:id", UserLive.Show, :show
+      live "/users/:id/show/edit", UserLive.Show, :edit
 
-      live "/users", UserLive , :index
-      live "/users/:id", UserLive.Show, :edit
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end

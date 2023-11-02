@@ -16,6 +16,13 @@
   <:col :let={{_id, contact}} label="Name"><%= contact.name %></:col>
   <:col :let={{_id, contact}} label="Email"><%= contact.email %></:col>
   <:col :let={{_id, contact}} label="Phone"><%= contact.phone %></:col>
+  <:col :let={{_id, contact}} label="Group">
+    <%= if contact.group do %>
+      <%= contact.group.name %>
+    <% else %>
+      N/A <!-- or any other suitable fallback -->
+    <% end %>
+  </:col>
   <:col :let={{_id, contact}} label="Active"><%= contact.active %></:col>
   <:action :let={{_id, contact}}>
     <div class="sr-only">

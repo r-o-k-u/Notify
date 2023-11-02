@@ -12,8 +12,8 @@ defmodule Notify.Accounts.Role do
     timestamps(type: :utc_datetime)
   end
 
-  @required_fields ~w(name permissions)a
-  @optional_fields ~w(active)a
+  # @required_fields ~w(name permissions)a
+  # @optional_fields ~w(active)a
 
 
 

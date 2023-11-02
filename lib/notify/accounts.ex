@@ -74,7 +74,7 @@ defmodule Notify.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user(id), do: Repo.get!(User, id)
+  def get_user!(id), do: Repo.get!(User, id)|> Repo.preload(:role)
 
   # TODO
   # def add_role_to_user(user, role_name) do
@@ -122,6 +122,18 @@ defmodule Notify.Accounts do
   def change_user_registration(%User{} = user, attrs \\ %{}) do
     User.registration_changeset(user, attrs, hash_password: false, validate_email: false)
   end
+
+  def change_user(%User{} = user, attrs \\ %{}) do
+    User.changeset(user, attrs)
+  end
+
+  def update_user(%User{} = user, attrs) do
+    user
+    |> User.changeset(attrs)
+    |> Repo.update()
+  end
+
+
 
   ## Settings
 

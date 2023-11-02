@@ -11,7 +11,7 @@ defmodule NotifyWeb.Plugs.CheckPermissions do
     user = get_user(conn)
     required_permission = get_required_permission(conn, opts)
 
-    if Permissions.user_has_permission?(user, required_permission) do
+    if Permissions.has_permission?(user, required_permission) do
       conn
     else
       conn

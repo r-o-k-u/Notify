@@ -26,13 +26,8 @@ defmodule NotifyWeb.UserLive.FormComponent do
         <.input field={@form[:email]} type="text" label="email" />
         <.input field={@form[:msisdn]} type="text" label="msisdn" />
         <.input field={@form[:active]} type="checkbox" label="Active" />
-        <label for="roleField">Role</label>
-        <select id="roleField">
-          <option value="super_admin">Super Admin</option>
-          <option value="admin">Admin</option>
-          <option value="user">User</option>
-          <option value="super_user">super user</option>
-        </select>
+        <.input field={@form[:role_id]} options={Enum.map(@role, &{&1.name, &1.id} )} type="select" label="Role" />
+
         <:actions>
           <.button phx-disable-with="Saving...">Save User</.button>
         </:actions>
@@ -43,7 +38,8 @@ defmodule NotifyWeb.UserLive.FormComponent do
 
   @impl true
   def update(%{user: user} = assigns, socket) do
-    changeset = Accounts.change_user_registration(user)
+    IO.puts("changgin")
+    changeset = Accounts.change_user(user)
 
     {:ok,
      socket
@@ -55,9 +51,9 @@ defmodule NotifyWeb.UserLive.FormComponent do
   def handle_event("validate", %{"user" => user_params}, socket) do
     changeset =
       socket.assigns.user
-      |> Accounts.change_user_registration(user_params)
+      |> Accounts.change_user(user_params)
       |> Map.put(:action, :validate)
-
+    IO.inspect changeset
     {:noreply, assign_form(socket, changeset)}
   end
 
@@ -66,7 +62,8 @@ defmodule NotifyWeb.UserLive.FormComponent do
   end
 
   defp save_user(socket, :edit, user_params) do
-    case Accounts.change_user_registration(socket.assigns.user, user_params) do
+    IO.puts("$$$$ SAVINGS@@@")
+    case Accounts.change_user(socket.assigns.user, user_params) do
       {:ok, user} ->
         notify_parent({:saved, user})
 
@@ -83,7 +80,9 @@ defmodule NotifyWeb.UserLive.FormComponent do
 
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    roles = Notify.Accounts.list_role()
     assign(socket, :form, to_form(changeset))
+    |> assign(:role, roles)
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})

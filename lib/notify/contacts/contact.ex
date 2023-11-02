@@ -7,14 +7,14 @@ defmodule Notify.Contacts.Contact do
     field :name, :string
     field :email, :string
     field :phone, :string
-    belongs_to :group, Notify.Group
+    belongs_to :group, Notify.Groups.Group
     belongs_to :user, Notify.Accounts.User
     timestamps(type: :utc_datetime)
   end
 
 
   @required_fields ~w(name email phone  )a
-  @optional_fields ~w(active group_id user_id)a
+  # @optional_fields ~w(active group_id user_id)a
 
   def changeset(contact, attrs) do
     contact

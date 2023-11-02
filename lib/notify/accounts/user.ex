@@ -55,10 +55,16 @@ defmodule Notify.Accounts.User do
     |> cast(attrs, @required_fields, @optional_fields)
     |> validate_required(@required_fields)
     |> validate_email(opts)
-    |> validate_password(opts)
-    |> validate_length(:first_name, max: 255)
-    |> validate_length(:last_name, max: 255)
+    # |> validate_password(opts)
+    # |> validate_length(:first_name, max: 255)
+    # |> validate_length(:last_name, max: 255)
     |> validate_format(:email, ~r/@/)
+  end
+
+  def changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email ,:password, :first_name ,:last_name ,:msisdn, :active ,:custom_permissions, :plan, :role_id])
+    |> validate_required([:first_name ,:last_name])
   end
 
   def update_user_changeset(user, attrs, opts \\ []) do

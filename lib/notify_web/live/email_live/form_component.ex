@@ -58,6 +58,8 @@ defmodule NotifyWeb.EmailLive.FormComponent do
   end
 
   def handle_event("save", %{"email" => email_params}, socket) do
+    x= Notify.Emails.send_email(email_params) # Send the email
+    IO.puts(x)
     save_email(socket, socket.assigns.action, email_params)
   end
 

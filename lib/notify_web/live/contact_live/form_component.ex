@@ -3,7 +3,6 @@ defmodule NotifyWeb.ContactLive.FormComponent do
 
   alias Notify.Contacts
   alias Notify.Groups
-  alias NotifyWeb.UserAuth
 
   @impl true
   def render(assigns) do
@@ -25,7 +24,7 @@ defmodule NotifyWeb.ContactLive.FormComponent do
         <.input field={@form[:email]} type="text" label="Email" />
         <.input field={@form[:phone]} type="text" label="Phone" />
         <.input field={@form[:active]} type="checkbox" label="Active" />
-        <.input field={@form[:group_id]} options={Enum.map(@groups, &{&1.name, &1.id} )} type="select" label="Group" />
+        <.input field={@form[:group_id]} options={Enum.map(@group, &{&1.name, &1.id} )} type="select" label="Group" />
        <:actions>
           <.button phx-disable-with="Saving...">Save Contact</.button>
         </:actions>
@@ -57,7 +56,7 @@ defmodule NotifyWeb.ContactLive.FormComponent do
 
   def handle_event("save", %{"contact" => contact_params}, socket) do
     # contact_param2 = contact_params |> Map.put("user_id",socket.assigns.current_user.id)
-    user = socket.assigns.current_user
+    # user = socket.assigns.current_user
     IO.puts("******")
     # IO.inspect auth
     save_contact(socket, socket.assigns.action, contact_params)

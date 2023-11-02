@@ -2,13 +2,14 @@ defmodule Notify.Emails do
   @moduledoc """
   The Emails context.
   """
-
-  import Ecto.Query, warn: false
+  import Swoosh.Email
+  # import Ecto.Query, warn: false
   alias Notify.Repo
 
   alias Notify.Emails.Email
 
   alias Notify.Contacts.Contact
+  alias Notify.Mailer
 
   @doc """
   Returns the list of emails.
@@ -91,28 +92,94 @@ defmodule Notify.Emails do
     Repo.delete(email)
   end
 
-  def send_email_to_contact( contact, subject,body , group) do
-    case Notify.Mailer.deliver(contact.email,subject, body) do
-      {:ok, _message} ->
-        contact.email
-        |> Email.changeset(%{status: :sent, delivery_status: :delivered, contact_id: contact.id,group_id: group.id})
-        |> Repo.update()
+  def send_email( email) do
+    IO.inspect email
 
-      {:error, _reason} ->
-        contact.email
-        |> Email.changeset(%{status: :sent, delivery_status: :failed, contact_id: contact.id,group_id: group.id})
-        |> Repo.update()
+    case email do
+      %{
+        "contact_id" => contact_id,
+        "content" => content,
+        "group_id" => group_id,
+        "subject" => subject
+      } ->
+        IO.puts("Contact ID: #{contact_id}")
+        IO.puts("Content: #{content}")
+        IO.puts("Group ID: #{group_id}")
+        IO.puts("Subject: #{subject}")
+
+        if group_id == 1 do
+          IO.puts("SENDING group email #{group_id}")
+        else
+          IO.puts("Sending individual email #{contact_id}")
+          send_email_to_contact(email)
+        end
+      _ ->
+        IO.puts("One or more keys not found in the map")
     end
+
+    false
+  end
+
+  def send_email_to_contact(email) do
+    case email do
+      %{
+        "contact_id" => contact_id,
+        "content" => content,
+        "group_id" => group_id,
+        "subject" => subject
+      } ->
+        IO.puts("Contact ID: #{contact_id}")
+        IO.puts("Content: #{content}")
+        IO.puts("Group ID: #{group_id}")
+        IO.puts("Subject: #{subject}")
+
+        IO.puts("SENDING group email  contact  - #{contact_id}")
+
+        contact = Repo.get_by(Contact, id: contact_id)
+
+        IO.inspect contact
+        IO.puts("Group ID: #{contact.email}")
+        email =
+          new()
+          |> to(contact.email)
+          |> from({"Notify", "contact@example.com"})
+          |> subject(subject)
+          |> text_body(content)
+         changeset =  Email.changeset(%Email{}, %{subject: subject, content: content, status: :sent, delivery_status: :failed,contact_id: contact.id, retry_count: 0})
+          IO.inspect changeset
+        case Mailer.deliver(email) do
+          # changeset =  Email.changeset(%Email{}, %{subject: subject, content: content, status: :sent, delivery_status: :failed,contact_id: contact.id, retry_count: 0})
+          # IO.inspect changeset
+          {:ok, _message} ->
+            email
+            |> IO.inspect(label: :_message)
+            |> Email.changeset(%Email{}, %{subject: subject, content: content, status: :sent, delivery_status: :failed,contact_id: contact.id, retry_count: 0})
+            # |> IO.inspect(label: :_message)
+            # |> Repo.update()
+
+          {:error, _reason} ->
+            contact.email
+            |> IO.inspect(label: :_reason)
+            |> Email.changeset(%{subject: :subject ,content: :content ,status: :sent, delivery_status: :failed, contact_id: contact.id})
+            |> Repo.update()
+
+        end
+      _ ->
+        IO.puts("One or more keys not found in the map")
+    end
+
+
+
   end
 
   def send_email_to_group(%Email{} = email, subject,body , group_id) do
     # Fetch all contacts in the specified group
-    contacts = Repo.all(from(c in Contact, where: c.group_id == ^group_id))
+    # contacts = Repo.all(from(c in Contact, where: c.group_id == ^group_id))
 
-    # Iterate through the contacts and send the email to each one
-    Enum.each(contacts, fn contact ->
-      send_email_to_contact(email, subject,body ,contact)
-    end)
+    # # Iterate through the contacts and send the email to each one
+    # Enum.each(contacts, fn contact ->
+    #   # send_email_to_contact(email, subject,body ,contact)
+    # end)
   end
 
 

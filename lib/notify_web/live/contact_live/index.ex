@@ -4,8 +4,6 @@ defmodule NotifyWeb.ContactLive.Index do
   alias Notify.Contacts
   alias Notify.Contacts.Contact
 
-  alias Notify.Groups
-
 
 
   @impl true

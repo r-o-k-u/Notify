@@ -45,7 +45,7 @@ defmodule NotifyWeb.GroupLive.FormComponent do
       socket.assigns.group
       |> Groups.change_group(group_params)
       |> Map.put(:action, :validate)
-
+      IO.inspect changeset
     {:noreply, assign_form(socket, changeset)}
   end
 
@@ -54,6 +54,7 @@ defmodule NotifyWeb.GroupLive.FormComponent do
   end
 
   defp save_group(socket, :edit, group_params) do
+    IO.putS("$$$$ SAVINGS@  group@")
     case Groups.update_group(socket.assigns.group, group_params) do
       {:ok, group} ->
         notify_parent({:saved, group})
