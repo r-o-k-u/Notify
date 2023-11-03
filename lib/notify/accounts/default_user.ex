@@ -11,7 +11,7 @@ defmodule Notify.Accounts.DefaultUser do
         custom_permissions: %{
           "default" => ["add_contact", "send_contact_email", "view_email_history", "delete_email"],
         },
-        role_id: 1
+        role_name: "Admin"
       },
       %{
         first_name: "Default",
@@ -20,7 +20,7 @@ defmodule Notify.Accounts.DefaultUser do
         msisdn: "254711223355",
         active: true,
         password: "password",
-        role_id: 2
+        role_name: "User"
       }
     ]
   end

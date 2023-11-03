@@ -101,10 +101,12 @@ defmodule Notify.Accounts do
   @doc """
   Checks if a user has a certain permission.
   """
-def has_permissions?(%User{role: %Role{permissions: permissions} = role, custom_permissions: custom_permissions}, {name, actions}) do
-  permissions = Map.get(role.permissions, name, %{})
-  Role.has_permission?(permissions, {name, actions}) || Map.get(custom_permissions, name) == actions
-end
+  def has_permissions?(%User{role: %Role{permissions: permissions} = role, custom_permissions: custom_permissions}, {name, actions}) do
+    permissions = Map.get(role.permissions, name, %{})
+    custom_permissions = custom_permissions || %{}  # Handle nil custom_permissions
+
+    Role.has_permission?(permissions, {name, actions}) || Map.get(custom_permissions, name) == actions
+  end
 
   @doc """
   Updates the user to a gold plan and adds the custom permission 'gold_privilage'.
@@ -138,11 +140,34 @@ end
       {:error, %Ecto.Changeset{}}
 
   """
-  def register_user(attrs) do
+  def register_user(attrs , role \\ get_default_role()) do
     IO.puts("REGISTERING")
     %User{}
     |> User.registration_changeset(attrs)
+    |> Ecto.Changeset.put_change(:role_id, role.id)
     |> Repo.insert()
+  end
+
+  defp get_default_role do
+    # Lookup or fetch the "User" role from the database
+    case Notify.Accounts.get_role_by_name("User") do
+      %Notify.Accounts.Role{} = role -> role
+      _ ->
+        # If the role doesn't exist, create it (adjust as needed)
+        role_attrs = %{
+          name: "User",
+          permissions: %{
+            "default" => ["add_contact", "send_contact_email", "view_email_history", "delete_email"]
+          }
+        }
+        role_changeset = Notify.Accounts.Role.changeset(%Notify.Accounts.Role{}, role_attrs)
+        case Repo.insert(role_changeset) do
+          {:ok, role} -> role
+          _ ->
+            # Handle the case where role creation fails (e.g., log an error)
+            raise "Failed to create the 'User' role"
+        end
+    end
   end
 
   @doc """

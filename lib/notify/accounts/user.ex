@@ -55,9 +55,9 @@ defmodule Notify.Accounts.User do
     |> cast(attrs, @required_fields, @optional_fields)
     |> validate_required(@required_fields)
     |> validate_email(opts)
-    # |> validate_password(opts)
-    # |> validate_length(:first_name, max: 255)
-    # |> validate_length(:last_name, max: 255)
+    |> validate_password(opts)
+    |> validate_length(:first_name, max: 255)
+    |> validate_length(:last_name, max: 255)
     |> validate_format(:email, ~r/@/)
   end
 
@@ -84,7 +84,7 @@ defmodule Notify.Accounts.User do
   defp validate_password(changeset, opts) do
     changeset
     |> validate_required([:password])
-    |> validate_length(:password, min: 12, max: 72)
+    |> validate_length(:password, min: 5, max: 72)
     # Examples of additional password validation:
     # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
     # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
