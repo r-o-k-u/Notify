@@ -139,6 +139,7 @@ end
 
   """
   def register_user(attrs) do
+    IO.puts("REGISTERING")
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
@@ -457,7 +458,11 @@ end
       ** (Ecto.NoResultsError)
 
   """
-  def get_role!(id), do: Repo.get!(Role, id)
+  def get_role!(id) do
+    IO.puts("***IDDD")
+    IO.puts(id)
+    Repo.get!(Role, id)
+  end
 
   @doc """
   Creates a role.
@@ -472,6 +477,7 @@ end
 
   """
   def create_role(attrs \\ %{}) do
+    IO.puts("CREATING ROLE")
     %Role{}
     |> Role.changeset(attrs)
     |> Repo.insert()

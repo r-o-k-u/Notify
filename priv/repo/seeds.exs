@@ -25,3 +25,21 @@ for role <- Notify.Accounts.DefaultRoles.all() do
     {:ok, _role} = Notify.Accounts.create_role(role)
   end
 end
+
+
+for user <- Notify.Accounts.DefaultUser.all() do
+  case Notify.Accounts.get_role!(user.role_id) do
+    %Notify.Accounts.Role{} = role ->
+      IO.puts("User already has a role: #{role.name}")
+
+      # Register the user with the default role
+      case Notify.Accounts.register_user(user) do
+        {:ok, _registered_user} ->
+          IO.puts("User with default role registered.")
+        {:error, changeset} ->
+          IO.puts("Error registering user: #{inspect(changeset)}")
+      end
+    nil ->
+      IO.puts("Role not found")
+  end
+end

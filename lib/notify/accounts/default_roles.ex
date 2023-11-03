@@ -15,11 +15,6 @@ defmodule Notify.Accounts.DefaultRoles do
           "gold_privilage" => ["add_groups", "add_group_contact", "send_group_email", "email_stats"]
         }
       },
-      %{
-        name: "Guest",
-        permissions: %{
-        }
-      }
     ]
   end
 end
