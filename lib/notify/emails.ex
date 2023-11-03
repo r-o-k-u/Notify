@@ -117,8 +117,8 @@ defmodule Notify.Emails do
         else
           IO.puts("Sending individual email #{contact_id}")
           case send_email_to_contact(email) do
-            {:ok, _} ->
-              {:ok, "Individual email sent successfully"}
+            {:ok, changeset} ->
+              {:ok, changeset}
             {:error, reason} ->
               IO.puts("Failed to send individual email: #{reason}")
               {:error, "Failed to send individual email"}
@@ -158,26 +158,25 @@ defmodule Notify.Emails do
               |> text_body(content)
             IO.inspect email
             case Mailer.deliver(email) do
+
               {:ok, _email} ->
                 IO.puts("Email delivered successfully")
 
                 # Create an email record
-                changeset = %{
-                  subject: subject,
-                  content: content,
-                  status: :sent,
-                  delivery_status: :delivered,
-                  contact_id: contact_id,
-                  group_id: group_id,  # Add group_id if available
-                  retry_count: 0
-                }
+                # Build the changeset map
+              changeset = %{
+                subject: subject,
+                content: content,
+                status: :sent,
+                delivery_status: :delivered,
+                contact_id: contact_id,
+                group_id: group_id,  # Add group_id if available
+                retry_count: 0
+              }
 
-                case create_email(changeset) do
-                  {:ok, _} ->
-                    {:ok, "Email record created successfully"}
-                  {:error, changeset} ->
-                    {:error, "Failed to create email record: #{inspect(changeset)}"}
-                end
+              {:ok, changeset}
+
+
 
               {:error, reason} ->
                 IO.puts("Failed to deliver email: #{reason}")

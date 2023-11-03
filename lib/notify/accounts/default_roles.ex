@@ -4,21 +4,20 @@ defmodule Notify.Accounts.DefaultRoles do
       %{
         name: "User",
         permissions: %{
-          "emails" => ["create", "read", "update", "delete"]
+          "default" => ["add_contact", "send_contact_email", "view_email_history", "delete_email"],
         }
       },
       %{
         name: "Admin",
         permissions: %{
-          "emails" => ["create", "read", "update", "delete"],
-          "contacts" => ["create","read", "update", "delete"],
-          "groups" => ["create","read", "update", "delete"],
+          "admin" => ["view_users", "view_user_emails", "delete_user"],
+          "default" => ["add_contact", "send_contact_email", "view_email_history", "delete_email"],
+          "gold_privilage" => ["add_groups", "add_group_contact", "send_group_email", "email_stats"]
         }
       },
       %{
         name: "Guest",
         permissions: %{
-          "emails" => ["read"]
         }
       }
     ]

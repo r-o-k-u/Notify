@@ -62,15 +62,15 @@ defmodule NotifyWeb.EmailLive.FormComponent do
   def handle_event("save", %{"email" => email_params}, socket) do
     case Notify.Emails.send_email(email_params) do
       {:ok, message} ->
-        IO.puts("Email sending was successful: #{message}")
+        IO.puts("Email sending was successful")
         # Sending email was successful, now save the email and update the socket
-        save_email(socket, socket.assigns.action, email_params)
+        save_email(socket, socket.assigns.action, message)
 
       {:error, message} ->
-        IO.puts("Email sending failed: #{message}")
+        IO.puts("Email sending failed:")
         # Sending email failed; you can handle this case as needed
         # In this example, I'm just printing an error message
-        IO.puts("Failed to send the email: #{message}")
+        IO.puts("Failed to send the email")
         {:noreply, socket}
     end
   end

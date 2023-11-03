@@ -38,4 +38,13 @@ defmodule Notify.Accounts.Role do
       end
     end)
   end
+
+  def has_permission?(permissions, {name, actions}) do
+    case Map.get(permissions, name) do
+      nil -> false
+      permitted_actions ->
+        actions
+        |> Enum.all?(fn action -> action in permitted_actions end)
+    end
+  end
 end

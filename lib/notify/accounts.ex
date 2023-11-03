@@ -76,19 +76,53 @@ defmodule Notify.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)|> Repo.preload(:role)
 
-  # TODO
-  # def add_role_to_user(user, role_name) do
-  #   with {:ok, role} <- get_role_by_name(role_name) do
-  #     update_user(user, %{role_id: role.id})
-  #   end
-  # end
 
+  @doc """
+  Checks if a user has a certain plan.
+  """
+  def has_plan?(%User{plan: plan}, required_plan) when is_atom(required_plan) do
+    plan == required_plan
+  end
 
-  # def add_custom_permission_to_user(user, name, actions) do
-  #   custom_permissions = Map.put(user.custom_permissions, name, actions)
-  #   update_user(user, %{custom_permissions, custom_permissions})
-  # end
+  @doc """
+  Checks if a user is an admin.
+  """
+  def is_admin?(%User{role: %Role{name: "admin"}}) do
+    true
+  end
 
+  @doc """
+  Checks if a user is an admin with superuser rights.
+  """
+  def is_admin_with_superuser_rights?(%User{role: %Role{name: "admin", permissions: permissions}}) do
+    Role.has_permission?(permissions, {"superuser", ["all"]})
+  end
+
+  @doc """
+  Checks if a user has a certain permission.
+  """
+def has_permissions?(%User{role: %Role{permissions: permissions} = role, custom_permissions: custom_permissions}, {name, actions}) do
+  permissions = Map.get(role.permissions, name, %{})
+  Role.has_permission?(permissions, {name, actions}) || Map.get(custom_permissions, name) == actions
+end
+
+  @doc """
+  Updates the user to a gold plan and adds the custom permission 'gold_privilage'.
+  """
+  def upgrade_user_to_gold_plan(%User{} = user) do
+    user
+    |> User.update_user(%{plan: :gold, custom_permissions: %{"gold_privilage" => ["add_groups", "add_group_contact", "send_group_email", "email_stats"]}})
+  end
+
+  @doc """
+  Updates the user's role.
+  """
+  def update_user_role(%User{} = user, new_role) when is_binary(new_role) do
+    with {:ok, role} <- Role.get_role_by_name(new_role) do
+      user
+      |> User.update_user(%{role_id: role.id})
+    end
+  end
 
   ## User registration
 
@@ -274,6 +308,7 @@ defmodule Notify.Accounts do
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
     Repo.one(query)
+    |> Repo.preload(:role)
   end
 
   @doc """

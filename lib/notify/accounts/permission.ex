@@ -4,9 +4,10 @@ defmodule Notify.Accounts.Permission do
 
   def all() do
     %{
-      "contacts" => ["create", "read", "update", "delete"],
-      "emails" => ["create", "read", "update", "delete"],
-      "groups" => ["create", "read", "update", "delete"]
+      "admin" => ["view_users", "view_user_emails", "delete_user"],
+      "superuser" => ["all","upgrade_user_plan","grant_admin", "revoke_admin"],
+      "default" => ["add_contact", "send_contact_email", "view_email_history", "delete_email"],
+      "gold_privilage" => ["add_groups", "add_group_contact", "send_group_email", "email_stats"],
     }
   end
 

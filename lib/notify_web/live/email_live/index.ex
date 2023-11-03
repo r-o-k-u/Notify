@@ -3,24 +3,16 @@ defmodule NotifyWeb.EmailLive.Index do
 
   alias Notify.Emails
   alias Notify.Emails.Email
-
-
-  # @impl true
-  # def render(assigns) do
-  #   ~L"""
-  #   <div>
-  #     <%= if assigns[:contact] do %>
-  #       <%= live_render(@socket, NotifyWeb.EmailLive.FormComponent, contact: assigns[:contact]) %>
-  #     <% else %>
-  #       <%= live_render(@socket, NotifyWeb.EmailLive.FormComponent) %>
-  #     <% end %>
-  #   </div>
-  #   """
-  # end
+  import Notify.Accounts
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, stream(socket, :emails, Emails.list_emails() )}
+  def mount(_params, session, socket) do
+    IO.inspect socket.assigns.current_user
+    # {:ok, stream(socket, :emails, Emails.list_emails())}
+
+    {:ok, assign(socket, current_user: socket.assigns.current_user, emails: Emails.list_emails())}
+
+
   end
 
   @impl true
@@ -38,7 +30,6 @@ defmodule NotifyWeb.EmailLive.Index do
     socket
     |> assign(:page_title, "New Email")
     |> assign(:email_type, "single")
-
     |> assign(:email, %Email{})
   end
 
@@ -57,7 +48,40 @@ defmodule NotifyWeb.EmailLive.Index do
   def handle_event("delete", %{"id" => id}, socket) do
     email = Emails.get_email!(id)
     {:ok, _} = Emails.delete_email(email)
-
     {:noreply, stream_delete(socket, :emails, email)}
+  end
+
+  # Status functions with placeholder values
+  defp number_of_emails_sent() do
+    # Replace with logic to calculate the number of emails sent
+    100
+  end
+
+  defp number_of_group_emails_sent() do
+    # Replace with logic to calculate the number of group emails sent
+    50
+  end
+
+  defp number_of_pending_emails() do
+    # Replace with logic to calculate the number of pending emails
+    25
+  end
+
+  defp number_of_failed_emails() do
+    # Replace with logic to calculate the number of failed emails
+    10
+  end
+
+  defp number_of_retried_emails() do
+    # Replace with logic to calculate the number of retried emails
+    5
+  end
+
+  defp list_failed_emails() do
+    # Replace with logic to fetch and return a list of failed emails
+    [
+      %Email{subject: "Failed Email 1"},
+      %Email{subject: "Failed Email 2"}
+    ]
   end
 end
