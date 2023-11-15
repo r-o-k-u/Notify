@@ -18,14 +18,19 @@ defmodule NotifyWeb.MainDashLive do
               <div class="bg-white py-24 sm:py-32">
               <div class="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
                 <ul role="list" class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
-                  <li>
-                    <div class="flex items-center gap-x-6">
-                      <img class="h-16 w-16 rounded-full" src="https://www.svgrepo.com/show/81263/users-group-symbol-for-add.svg" alt="">
-                      <.link href={"/users"}>
-                        <h3 class="text-base font-semibold leading-7 tracking-tight text-indigo-600">Users</h3>
-                       </.link>
-                    </div>
-                  </li>
+                  <%= if @current_user.role.name == "Admin" do %>
+                    <li>
+                      <div class="flex items-center gap-x-6">
+                        <img class="h-16 w-16 rounded-full" src="https://www.svgrepo.com/show/81263/users-group-symbol-for-add.svg" alt="">
+                        <.link href={"/users"}>
+                          <h3 class="text-base font-semibold leading-7 tracking-tight text-indigo-600">Users</h3>
+                        </.link>
+                      </div>
+                    </li>
+                  <% else %>
+                    <!--  suitable feedback -->
+                  <% end %>
+
                   <li>
                     <div class="flex items-center gap-x-6">
                       <img class="h-16 w-16 rounded-full" src="https://static.thenounproject.com/png/4779769-200.png" alt="">
@@ -62,5 +67,12 @@ defmodule NotifyWeb.MainDashLive do
       </div>
     </div>
     """
+  end
+
+  def mount(_params, _session, socket) do
+    # IO.puts(socket.assigns.current_user)
+    {:ok,
+    socket
+    |> assign(:current_user, socket.assigns.current_user)}
   end
 end

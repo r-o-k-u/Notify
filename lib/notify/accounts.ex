@@ -141,7 +141,6 @@ defmodule Notify.Accounts do
 
   """
   def register_user(attrs , role \\ get_default_role()) do
-    IO.puts("REGISTERING")
     %User{}
     |> User.registration_changeset(attrs)
     |> Ecto.Changeset.put_change(:role_id, role.id)
@@ -184,7 +183,7 @@ defmodule Notify.Accounts do
   end
 
   def change_user(%User{} = user, attrs \\ %{}) do
-    User.changeset(user, attrs)
+    User.changeUserset(user, attrs, hash_password: false, validate_email: false)
   end
 
   def update_user(%User{} = user, attrs) do
@@ -484,8 +483,6 @@ defmodule Notify.Accounts do
 
   """
   def get_role!(id) do
-    IO.puts("***IDDD")
-    IO.puts(id)
     Repo.get!(Role, id)
   end
 
@@ -502,7 +499,6 @@ defmodule Notify.Accounts do
 
   """
   def create_role(attrs \\ %{}) do
-    IO.puts("CREATING ROLE")
     %Role{}
     |> Role.changeset(attrs)
     |> Repo.insert()

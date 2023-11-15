@@ -34,7 +34,6 @@ defmodule NotifyWeb.UserLive.Index do
   # end
 
   def apply_action(socket, :edit, %{"id" => id}) do
-    IO.puts("EDITTING")
     socket
     |> assign(:page_title, "Edit User")
     |> assign(:_user, Accounts.get_user!(id))

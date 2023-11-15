@@ -57,7 +57,6 @@ defmodule NotifyWeb.ContactLive.FormComponent do
   def handle_event("save", %{"contact" => contact_params}, socket) do
     # contact_param2 = contact_params |> Map.put("user_id",socket.assigns.current_user.id)
     # user = socket.assigns.current_user
-    IO.puts("******")
     # IO.inspect auth
     save_contact(socket, socket.assigns.action, contact_params)
   end

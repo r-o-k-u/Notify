@@ -31,7 +31,6 @@ for user <- Notify.Accounts.DefaultUser.all() do
   case Notify.Accounts.get_role_by_name(user.role_name) do
     %Notify.Accounts.Role{} = role ->
       IO.puts("User already has a role: #{role.name}")
-      IO.inspect user
       case Notify.Accounts.register_user(user ,role) do
         {:ok, _registered_user} ->
           IO.puts("User with default role registered.")

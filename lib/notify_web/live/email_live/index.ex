@@ -7,7 +7,6 @@ defmodule NotifyWeb.EmailLive.Index do
 
   @impl true
   def mount(_params, session, socket) do
-    IO.inspect socket.assigns.current_user
     # {:ok, stream(socket, :emails, Emails.list_emails())}
 
     {:ok, assign(socket, current_user: socket.assigns.current_user, emails: Emails.list_emails())}

@@ -38,7 +38,7 @@ defmodule NotifyWeb.UserLive.FormComponent do
   @impl true
   def update(%{user: user} = assigns, socket) do
     IO.puts("changgin")
-    changeset = Accounts.change_user(user)
+    changeset = Accounts.change_user_registration(user)
 
     {:ok,
      socket
@@ -52,7 +52,6 @@ defmodule NotifyWeb.UserLive.FormComponent do
       socket.assigns.user
       |> Accounts.change_user(user_params)
       |> Map.put(:action, :validate)
-    IO.inspect changeset
     {:noreply, assign_form(socket, changeset)}
   end
 
@@ -61,7 +60,6 @@ defmodule NotifyWeb.UserLive.FormComponent do
   end
 
   defp save_user(socket, :edit, user_params) do
-    IO.puts("$$$$ SAVINGS@@@")
     case Accounts.change_user(socket.assigns.user, user_params) do
       {:ok, user} ->
         notify_parent({:saved, user})

@@ -53,7 +53,6 @@ defmodule Notify.Emails do
 
   """
   def create_email(attrs \\ %{}) do
-    IO.puts("CREATING EMAIL")
     %Email{}
     |> Email.changeset(attrs)
     |> Repo.insert()
@@ -94,7 +93,6 @@ defmodule Notify.Emails do
   end
 
   def send_email(email) do
-    IO.inspect email
 
     case email do
       %{
@@ -156,7 +154,6 @@ defmodule Notify.Emails do
               |> from({"Notify", "contact@example.com"})
               |> subject(subject)
               |> text_body(content)
-            IO.inspect email
             case Mailer.deliver(email) do
 
               {:ok, _email} ->
