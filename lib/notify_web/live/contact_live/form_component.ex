@@ -24,7 +24,9 @@ defmodule NotifyWeb.ContactLive.FormComponent do
         <.input field={@form[:email]} type="text" label="Email" />
         <.input field={@form[:phone]} type="text" label="Phone" />
         <.input field={@form[:active]} type="checkbox" label="Active" />
-        <.input field={@form[:group_id]} options={Enum.map(@group, &{&1.name, &1.id} )} type="select" label="Group" />
+        <%= if assigns[:groups] do %>
+          <.input field={@form[:group_id]} options={Enum.map(@groups, &{&1.name, &1.id})} type="select" label="Group" />
+        <% end %>
        <:actions>
           <.button phx-disable-with="Saving...">Save Contact</.button>
         </:actions>
@@ -34,13 +36,20 @@ defmodule NotifyWeb.ContactLive.FormComponent do
   end
 
   @impl true
+  def mount(_params, %{contact: contact} = socket) do
+    changeset = Contacts.change_contact(contact)
+    groups = Groups.list_groups()
+
+    {:ok, assign_form(socket |> assign(:groups, groups), changeset)}
+  end
+
+  @impl true
   def update(%{contact: contact} = assigns, socket) do
     changeset = Contacts.change_contact(contact)
 
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:groups, Groups.list_groups())
      |> assign_form(changeset)}
   end
 
