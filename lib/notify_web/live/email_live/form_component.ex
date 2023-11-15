@@ -1,5 +1,6 @@
 defmodule NotifyWeb.EmailLive.FormComponent do
   use NotifyWeb, :live_component
+  import Phoenix.HTML.Form, only: [select: 4]
 
   alias Notify.Emails
   alias Notify.Contacts
@@ -22,9 +23,10 @@ defmodule NotifyWeb.EmailLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:subject]} type="text" label="Subject" />
-        <.input  field={@form[:content]} type="textarea" label="Content" />
-        <.input field={@form[:group_id]} options={Enum.map(@groups, &{&1.name, &1.id} )} type="select" label="Group" />
-        <.input field={@form[:contact_id]} options={Enum.map(@contacts, &{&1.name, &1.id} )} type="select" label="Contact" />
+        <.input field={@form[:content]} type="textarea" label="Content" />
+        <label for="email_group_id">Group</label>
+        <%= select @form, :group_id, [{nil, nil} | Enum.map(@groups, &{&1.name, &1.id})], label: "Group" %>
+        <.input field={@form[:contact_id]} options={Enum.map(@contacts, &{&1.name, &1.id})} type="select" label="Contact" />
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Email</.button>
@@ -76,6 +78,7 @@ defmodule NotifyWeb.EmailLive.FormComponent do
   end
 
   defp save_email(socket, :edit, email_params) do
+    IO.inspect email_params
     case Emails.update_email(socket.assigns.email, email_params) do
       {:ok, email} ->
         notify_parent({:saved, email})
@@ -86,9 +89,11 @@ defmodule NotifyWeb.EmailLive.FormComponent do
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect(changeset.errors, label: "Update Email Errors")
         {:noreply, assign_form(socket, changeset)}
     end
   end
+
 
   defp save_email(socket, :new, email_params) do
     case Emails.create_email(email_params) do

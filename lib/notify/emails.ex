@@ -93,7 +93,8 @@ defmodule Notify.Emails do
   end
 
   def send_email(email) do
-
+    IO.puts("#### EMAIL ####")
+    IO.inspect email
     case email do
       %{
         "contact_id" => contact_id,

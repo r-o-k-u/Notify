@@ -27,6 +27,7 @@ defmodule NotifyWeb.UserLive.FormComponent do
         <.input field={@form[:msisdn]} type="text" label="msisdn" />
         <.input field={@form[:active]} type="checkbox" label="Active" />
         <.input field={@form[:role_id]} options={Enum.map(@role, &{&1.name, &1.id} )} type="select" label="Role" />
+        <.input field={@form[:plan]} options={[:normal, :gold]} type="select" label="Plan" />
         <:actions>
           <.button phx-disable-with="Saving...">Save User</.button>
         </:actions>
@@ -37,7 +38,7 @@ defmodule NotifyWeb.UserLive.FormComponent do
 
   @impl true
   def update(%{user: user} = assigns, socket) do
-    IO.puts("changgin")
+
     changeset = Accounts.change_user_registration(user)
 
     {:ok,
@@ -48,10 +49,16 @@ defmodule NotifyWeb.UserLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"user" => user_params}, socket) do
+    # IO.inspect(socket, label: "Socket in handle_event")
+    # IO.inspect(user_params, label: "User Params in handle_event")
+
     changeset =
       socket.assigns.user
       |> Accounts.change_user(user_params)
       |> Map.put(:action, :validate)
+
+    # IO.inspect(changeset, label: "Changeset in handle_event")
+
     {:noreply, assign_form(socket, changeset)}
   end
 
@@ -59,17 +66,22 @@ defmodule NotifyWeb.UserLive.FormComponent do
     save_user(socket, socket.assigns.action, user_params)
   end
 
-  defp save_user(socket, :edit, user_params) do
-    case Accounts.change_user(socket.assigns.user, user_params) do
-      {:ok, user} ->
-        notify_parent({:saved, user})
 
-        {:noreply,
-         socket
-         |> put_flash(:info, "User updated successfully")
-         |> push_patch(to: socket.assigns.patch)}
+
+  defp save_user(socket, :edit, user_params) do
+    IO.puts("UPDATING ...")
+    case Accounts.update_user(socket.assigns.user, user_params) do
+      {:ok, contact} ->
+        notify_parent({:saved, contact})
+        IO.inspect(socket.assigns.patch, label: "URI Path in save_user")
+        socket
+        |> put_flash(:info, "user updated successfully")
+        |> push_patch(to: socket.assigns.patch)
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        # Debugging: Inspect the changeset if an error occurs
+        IO.inspect(changeset, label: "Changeset error in save_user")
+
         {:noreply, assign_form(socket, changeset)}
     end
   end

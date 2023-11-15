@@ -9,6 +9,7 @@
         <th class="py-3 px-6 text-left">Last Name</th>
         <th class="py-3 px-6 text-left">Email</th>
         <th class="py-3 px-6 text-left">Msisdn</th>
+        <th class="py-3 px-6 text-left">Plan</th>
         <th class="py-3 px-6 text-left">Role</th>
         <th class="py-3 px-6 text-left">Active</th>
         <th class="py-3 px-6 text-left">Actions</th>
@@ -22,6 +23,7 @@
           <td  class="py-3 px-6 text-center"><%= user.last_name %></td>
           <td  class="py-3 px-6 text-center"><%= user.email %></td>
           <td  class="py-3 px-6 text-center"><%= user.msisdn %></td>
+           <td  class="py-3 px-6 text-center"><%= user.plan %></td>
           <td class="py-3 px-6 text-center">
             <%= if user.role do %>
               <%= user.role.name %>

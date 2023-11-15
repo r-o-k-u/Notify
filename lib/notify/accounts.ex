@@ -186,9 +186,14 @@ defmodule Notify.Accounts do
     User.changeUserset(user, attrs, hash_password: false, validate_email: false)
   end
 
-  def update_user(%User{} = user, attrs) do
+
+
+  def update_user(user, user_params) do
+    IO.inspect(user, label: "User in update_user")
+    IO.inspect(user_params, label: "User params in update_user")
+
     user
-    |> User.changeset(attrs)
+    |> User.changeUserset(user_params)
     |> Repo.update()
   end
 
